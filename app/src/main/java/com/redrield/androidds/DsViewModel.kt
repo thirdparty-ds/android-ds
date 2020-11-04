@@ -8,8 +8,13 @@ import com.redrield.androidds.ds.DriverStation
 import com.redrield.androidds.ds.MockDriverStation
 import com.redrield.androidds.ds.RealDriverStation
 import com.redrield.androidds.ds.Mode
+import java.util.*
+import java.util.concurrent.ScheduledThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 
 class DsViewModel(private val savedStateHandle: SavedStateHandle, mock: Boolean) : ViewModel() {
+
+    private val updateScheduler = ScheduledThreadPoolExecutor(1)
 
     // Default args dont work but this does, :shrug:
     constructor(savedStateHandle: SavedStateHandle) : this(savedStateHandle, false)
@@ -39,6 +44,10 @@ class DsViewModel(private val savedStateHandle: SavedStateHandle, mock: Boolean)
     private val _batteryVoltage = MutableLiveData<Float>()
     val batteryVoltage: LiveData<Float>
         get() = _batteryVoltage
+
+    private val _connected = MutableLiveData<Boolean>()
+    val connected: LiveData<Boolean>
+        get() = _connected
 
     init {
         ds = if(!mock) {
@@ -104,6 +113,18 @@ class DsViewModel(private val savedStateHandle: SavedStateHandle, mock: Boolean)
 
     fun changeTab(tab: SelectedTab) {
         _tab.value = tab
+    }
+
+    init {
+        updateScheduler.scheduleAtFixedRate(this::updateFromDS, 0, 20, TimeUnit.MILLISECONDS)
+    }
+
+    private fun updateFromDS() {
+        if(_connected.value != true && ds.connected) {
+            _connected.postValue(true)
+        } else if(_connected.value != false && !ds.connected) {
+            _connected.postValue(false)
+        }
     }
 
     enum class SelectedTab {

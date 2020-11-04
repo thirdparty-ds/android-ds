@@ -124,7 +124,8 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_redrield_androidds_ds_RealDriverStation__1setTeamNumber(JNIEnv *env, jobject thiz, jlong ptr,
                                                                  jint team) {
-    DS_DriverStation_set_team_number(reinterpret_cast<DriverStation*>(ptr), team);
+    __android_log_print(ANDROID_LOG_INFO, "dsJNI", "Setting team number to %d", team);
+    DS_DriverStation_set_team_number(reinterpret_cast<DriverStation*>(ptr),(uint32_t) team);
 }
 extern "C"
 JNIEXPORT jboolean JNICALL
