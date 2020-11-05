@@ -23,7 +23,7 @@ fun ControlTab(model: DsViewModel) {
     val teamNumber by model.teamNumber.observeAsState(0)
     val connected by model.connected.observeAsState(false)
 
-    Column(modifier = Modifier.wrapContentSize(Alignment.Center)) {
+    Column {
         Row {
             Text("Current team number: $teamNumber")
             Button(onClick = { model.setTeamNumber(4069) }, modifier = Modifier.padding(horizontal = 5.dp)) {

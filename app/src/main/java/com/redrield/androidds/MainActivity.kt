@@ -14,11 +14,12 @@ import com.redrield.androidds.ui.views.AndroidDS
 
 class MainActivity : AppCompatActivity() {
 
-    val model by viewModels<DsViewModel>()
+    private val model by viewModels<DsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            // Theme is ruining the look for some reason
             AndroidDSTheme {
                 AndroidDS(model)
             }
