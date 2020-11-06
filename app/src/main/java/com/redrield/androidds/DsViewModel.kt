@@ -125,6 +125,10 @@ class DsViewModel(private val savedStateHandle: SavedStateHandle, mock: Boolean)
         } else if(_connected.value != false && !ds.connected) {
             _connected.postValue(false)
         }
+
+        if(ds.connected) {
+            _batteryVoltage.postValue(ds.batteryVoltage)
+        }
     }
 
     enum class SelectedTab {
