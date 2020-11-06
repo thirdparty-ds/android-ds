@@ -27,7 +27,19 @@ fun ControlTab(model: DsViewModel) {
     val teamNumber by model.teamNumber.observeAsState(0)
     val connected by model.connected.observeAsState(false)
     val state = remember { BatteryState(1.0/50.0, 5.0) }
+    var invalidationNotifier by mutableStateOf(Unit)
     val latestVoltage by model.batteryVoltage.observeAsState(0f)
+
+    val voltageData = model.batteryVoltage
+    val lifecycleOwner = LifecycleOwnerAmbient.current
+    onCommit(voltageData, lifecycleOwner) {
+        val observer = Observer<Float> {
+            state.push(it)
+            invalidationNotifier = Unit // Janky way to force an invalidation when the state gets updated
+        }
+        voltageData.observe(lifecycleOwner, observer)
+        onDispose { voltageData.removeObserver(observer) }
+    }
 
     state.push(latestVoltage)
 
