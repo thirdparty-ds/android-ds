@@ -9,6 +9,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonConstants
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.redrield.androidds.ui.DisableRed
 import com.redrield.androidds.ui.EnableGreen
@@ -43,7 +44,7 @@ fun EnableButtons(enabled: Boolean, setEnabled: (Boolean) -> Unit) {
             }, Modifier.preferredHeight(100.dp).fillMaxWidth(),
             colors = ButtonConstants.defaultButtonColors(backgroundColor = DisableRed)
         ) {
-            Text("Disable")
+            Text("Disable", fontWeight = FontWeight.SemiBold)
         }
     }
 }
