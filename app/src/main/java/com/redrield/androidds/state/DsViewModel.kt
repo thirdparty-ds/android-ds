@@ -1,4 +1,4 @@
-package com.redrield.androidds
+package com.redrield.androidds.state
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,7 +8,6 @@ import com.redrield.androidds.ds.DriverStation
 import com.redrield.androidds.ds.MockDriverStation
 import com.redrield.androidds.ds.RealDriverStation
 import com.redrield.androidds.ds.Mode
-import java.util.*
 import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
@@ -41,9 +40,7 @@ class DsViewModel(private val savedStateHandle: SavedStateHandle, mock: Boolean)
     val mode: LiveData<Mode>
         get() = _mode
 
-    private val _batteryVoltage = MutableLiveData<Float>()
-    val batteryVoltage: LiveData<Float>
-        get() = _batteryVoltage
+    val batteryState = BatteryState(1.0/50.0, 5.0)
 
     private val _connected = MutableLiveData<Boolean>()
     val connected: LiveData<Boolean>
@@ -68,47 +65,37 @@ class DsViewModel(private val savedStateHandle: SavedStateHandle, mock: Boolean)
                 ds.enable()
             }
 
-            _teamNumber.postValue(it.teamNumber)
-            _mode.postValue(it.mode)
-            _estopped.postValue(it.estopped)
-            _enabled.postValue(it.enabled)
-            _batteryVoltage.postValue(it.batteryVoltage)
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        savedStateHandle.set("state", DsState(enabled.value ?: false, mode.value ?: Mode.Autonomous, teamNumber.value ?: 0, estopped.value ?: false, batteryVoltage.value ?: 0f))
+        savedStateHandle.set("state", DsState(enabled.value ?: false, mode.value ?: Mode.Autonomous, teamNumber.value ?: 0, estopped.value ?: false))
         ds.close()
     }
 
     fun estop() {
         ds.estop()
-        _estopped.postValue(true)
     }
 
     fun enable() {
         if(!ds.enabled) {
             ds.enable()
-            _enabled.postValue(true)
         }
     }
 
     fun disable() {
         if(ds.enabled) {
             ds.disable()
-            _enabled.postValue(false)
         }
     }
 
     fun setMode(mode: Mode) {
         ds.mode = mode
-        _mode.postValue(mode)
     }
 
     fun setTeamNumber(team: Int) {
         ds.teamNumber = team
-        _teamNumber.postValue(team)
     }
 
     fun changeTab(tab: SelectedTab) {
@@ -127,7 +114,11 @@ class DsViewModel(private val savedStateHandle: SavedStateHandle, mock: Boolean)
         }
 
         if(ds.connected) {
-            _batteryVoltage.postValue(ds.batteryVoltage)
+            batteryState.push(ds.batteryVoltage)
+            _enabled.postValue(ds.enabled)
+            _mode.postValue(ds.mode)
+            _teamNumber.postValue(ds.teamNumber)
+            _estopped.postValue(ds.estopped)
         }
     }
 

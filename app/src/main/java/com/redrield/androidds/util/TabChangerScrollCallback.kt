@@ -1,7 +1,7 @@
 package com.redrield.androidds.util
 
 import androidx.compose.ui.gesture.ScrollCallback
-import com.redrield.androidds.DsViewModel
+import com.redrield.androidds.state.DsViewModel
 
 class TabChangerScrollCallback(private val currentTab: DsViewModel.SelectedTab, private val model: DsViewModel) : ScrollCallback {
 

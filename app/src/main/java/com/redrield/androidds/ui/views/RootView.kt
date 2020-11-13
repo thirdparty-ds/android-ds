@@ -19,7 +19,7 @@ import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
 import androidx.lifecycle.SavedStateHandle
 import androidx.ui.tooling.preview.Devices
 import androidx.ui.tooling.preview.Preview
-import com.redrield.androidds.DsViewModel
+import com.redrield.androidds.state.DsViewModel
 import com.redrield.androidds.ui.AndroidDSTheme
 import com.redrield.androidds.ui.FloatingActionButton
 import com.redrield.androidds.util.TabChangerScrollCallback

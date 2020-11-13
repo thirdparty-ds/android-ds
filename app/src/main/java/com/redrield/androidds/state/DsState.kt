@@ -1,4 +1,4 @@
-package com.redrield.androidds
+package com.redrield.androidds.state
 
 import android.os.Parcelable
 import com.redrield.androidds.ds.Mode
@@ -10,7 +10,6 @@ data class DsState(
     val mode: Mode,
     val teamNumber: Int,
     val estopped: Boolean,
-    val batteryVoltage: Float
 ) : Parcelable {
-    constructor() : this(false, Mode.Autonomous, 0, false, 0f)
+    constructor() : this(false, Mode.Autonomous, 0, false)
 }

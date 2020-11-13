@@ -1,7 +1,5 @@
 package com.redrield.androidds.ds
 
-import com.redrield.androidds.DsState
-
 class RealDriverStation(team: Int, alliance: Alliance): DriverStation, AutoCloseable {
     val ptr: Long
 

@@ -7,7 +7,7 @@ import androidx.compose.ui.geometry.toRect
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
-import com.redrield.androidds.BatteryState
+import com.redrield.androidds.state.BatteryState
 
 fun calculateDrawableArea(
     size: Size,

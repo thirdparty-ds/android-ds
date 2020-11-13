@@ -1,7 +1,5 @@
 package com.redrield.androidds.ds
 
-import com.redrield.androidds.DsState
-
 interface DriverStation {
     val batteryVoltage: Float
     val estopped: Boolean

@@ -1,12 +1,20 @@
 package com.redrield.androidds.util
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.adapters.ImmutableListAdapter
+import kotlinx.collections.immutable.mutate
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlin.math.min
 
 /**
  * This is a simple circular buffer so we don't need to "bucket brigade" copy old values.
  */
-class CircularBuffer(size: Int) {
-    var data = FloatArray(size)
+class CircularBuffer(_data: MutableState<PersistentList<Float>>) {
+    var data by _data
 
     // Index of element at front of buffer
     private var front = 0
@@ -49,7 +57,7 @@ class CircularBuffer(size: Int) {
             return
         }
         front = moduloDec(front)
-        data[front] = value
+        data = data.mutate { it[front] = value }
         if (length < data.size) {
             length++
         }
@@ -63,7 +71,7 @@ class CircularBuffer(size: Int) {
         if (data.isEmpty()) {
             return
         }
-        data[(front + length) % data.size] = value
+        data = data.mutate { it[(front + length) % data.size] = value }
         if (length < data.size) {
             length++
         } else {
@@ -101,27 +109,11 @@ class CircularBuffer(size: Int) {
     }
 
     /**
-     * Resizes internal buffer to given size.
-     *
-     *
-     * A new buffer is allocated because arrays are not resizable.
-     */
-    fun resize(size: Int) {
-        val newBuffer = FloatArray(size)
-        length = min(length, size)
-        for (i in 0 until length) {
-            newBuffer[i] = data[(front + i) % data.size]
-        }
-        data = newBuffer
-        front = 0
-    }
-
-    /**
      * Sets internal buffer contents to zero.
      */
     fun clear() {
-        for (i in data.indices) {
-            data[i] = 0f
+        data = data.mutate {
+            it.replaceAll { 0f }
         }
         front = 0
         length = 0
@@ -138,7 +130,7 @@ class CircularBuffer(size: Int) {
 
     fun forEachIndexed(fn: (Int, Float) -> Unit) {
         for(i in 0 until size) {
-            fn(i, data[(front + i) % size])
+            fn(front + i % data.size, data[(front + i) % data.size])
         }
     }
 
